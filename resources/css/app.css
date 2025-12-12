@@ -1,0 +1,322 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ========================================
+   Web Semantik - Pink Theme Design System
+   ======================================== */
+
+@layer base {
+    :root {
+        /* Pink Color Palette */
+        --pink-50: #fdf2f8;
+        --pink-100: #fce7f3;
+        --pink-200: #fbcfe8;
+        --pink-300: #f9a8d4;
+        --pink-400: #f472b6;
+        --pink-500: #ec4899;
+        --pink-600: #db2777;
+        --pink-700: #be185d;
+        --pink-800: #9d174d;
+        --pink-900: #831843;
+        
+        /* Semantic Colors */
+        --primary: #ec4899;
+        --primary-light: #f472b6;
+        --primary-dark: #db2777;
+        --secondary: #f9a8d4;
+        --accent: #fbcfe8;
+        
+        /* Gradients */
+        --gradient-pink: linear-gradient(135deg, #fce7f3 0%, #fbcfe8 50%, #f9a8d4 100%);
+        --gradient-pink-vibrant: linear-gradient(135deg, #ec4899 0%, #f472b6 50%, #fbcfe8 100%);
+        --gradient-pink-dark: linear-gradient(135deg, #be185d 0%, #db2777 50%, #ec4899 100%);
+        --gradient-radial: radial-gradient(circle at 50% 50%, #fce7f3, #fbcfe8, #f9a8d4);
+        
+        /* Shadows */
+        --shadow-pink: 0 4px 14px 0 rgba(236, 72, 153, 0.15);
+        --shadow-pink-lg: 0 10px 40px 0 rgba(236, 72, 153, 0.25);
+        --shadow-glow: 0 0 20px rgba(236, 72, 153, 0.3);
+        
+        /* Glass Effect */
+        --glass-bg: rgba(255, 255, 255, 0.7);
+        --glass-border: rgba(255, 255, 255, 0.3);
+    }
+    
+    body {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+}
+
+@layer components {
+    /* Glass Card Effect */
+    .glass-card {
+        background: var(--glass-bg);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid var(--glass-border);
+        box-shadow: var(--shadow-pink);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .glass-card:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--shadow-pink-lg);
+    }
+    
+    /* Gradient Background */
+    .bg-gradient-pink {
+        background: var(--gradient-pink);
+    }
+    
+    .bg-gradient-pink-vibrant {
+        background: var(--gradient-pink-vibrant);
+    }
+    
+    .bg-gradient-pink-dark {
+        background: var(--gradient-pink-dark);
+    }
+    
+    /* Animated Gradient Background */
+    .bg-animated-gradient {
+        background: linear-gradient(-45deg, #fce7f3, #fbcfe8, #f9a8d4, #f472b6);
+        background-size: 400% 400%;
+        animation: gradientShift 15s ease infinite;
+    }
+    
+    /* Interactive Button */
+    .btn-pink {
+        background: var(--gradient-pink-vibrant);
+        color: white;
+        padding: 0.75rem 1.5rem;
+        border-radius: 0.75rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: var(--shadow-pink);
+        border: none;
+        cursor: pointer;
+    }
+    
+    .btn-pink:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-pink-lg);
+    }
+    
+    .btn-pink:active {
+        transform: translateY(0);
+    }
+    
+    /* Search Bar */
+    .search-bar {
+        background: var(--glass-bg);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 2px solid var(--glass-border);
+        border-radius: 1rem;
+        padding: 0.875rem 1.25rem;
+        transition: all 0.3s ease;
+        width: 100%;
+    }
+    
+    .search-bar:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.1);
+    }
+    
+    /* Stat Card */
+    .stat-card {
+        background: var(--glass-bg);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid var(--glass-border);
+        border-radius: 1rem;
+        padding: 1.5rem;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .stat-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: var(--gradient-pink-vibrant);
+        transform: scaleX(0);
+        transition: transform 0.3s ease;
+    }
+    
+    .stat-card:hover::before {
+        transform: scaleX(1);
+    }
+    
+    .stat-card:hover {
+        transform: translateY(-6px) scale(1.02);
+        box-shadow: var(--shadow-pink-lg);
+    }
+    
+    /* Thesis Card */
+    .thesis-card {
+        background: white;
+        border-radius: 1rem;
+        padding: 1.5rem;
+        box-shadow: var(--shadow-pink);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        border: 1px solid rgba(236, 72, 153, 0.1);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .thesis-card::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: var(--gradient-pink);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        z-index: 0;
+    }
+    
+    .thesis-card:hover::after {
+        opacity: 0.05;
+    }
+    
+    .thesis-card:hover {
+        transform: translateY(-8px);
+        box-shadow: var(--shadow-pink-lg), var(--shadow-glow);
+        border-color: var(--primary);
+    }
+    
+    .thesis-card > * {
+        position: relative;
+        z-index: 1;
+    }
+    
+    /* Badge */
+    .badge-pink {
+        background: linear-gradient(135deg, #fce7f3, #fbcfe8);
+        color: #be185d;
+        padding: 0.375rem 0.875rem;
+        border-radius: 9999px;
+        font-size: 0.875rem;
+        font-weight: 600;
+        display: inline-block;
+    }
+    
+    /* Icon Container */
+    .icon-container {
+        width: 3rem;
+        height: 3rem;
+        border-radius: 0.75rem;
+        background: var(--gradient-pink-vibrant);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.5rem;
+        box-shadow: var(--shadow-pink);
+    }
+}
+
+@layer utilities {
+    /* Text Gradients */
+    .text-gradient-pink {
+        background: var(--gradient-pink-vibrant);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    
+    /* Animations */
+    .animate-float {
+        animation: float 3s ease-in-out infinite;
+    }
+    
+    .animate-fade-in {
+        animation: fadeIn 0.6s ease-out forwards;
+    }
+    
+    .animate-slide-up {
+        animation: slideUp 0.6s ease-out forwards;
+    }
+    
+    .animate-scale-in {
+        animation: scaleIn 0.4s ease-out forwards;
+    }
+    
+    /* Stagger delays for list items */
+    .delay-100 { animation-delay: 0.1s; }
+    .delay-200 { animation-delay: 0.2s; }
+    .delay-300 { animation-delay: 0.3s; }
+    .delay-400 { animation-delay: 0.4s; }
+    .delay-500 { animation-delay: 0.5s; }
+}
+
+/* Keyframe Animations */
+@keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes scaleIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: #fce7f3;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--gradient-pink-vibrant);
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--gradient-pink-dark);
+}
