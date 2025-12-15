@@ -3,15 +3,23 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\ThesisController as AdminThesisController;
 use App\Http\Controllers\Dosen\DosenController;
 use App\Http\Controllers\Dosen\ThesisController as DosenThesisController;
 use App\Http\Controllers\Mahasiswa\MahasiswaController;
 use App\Http\Controllers\Mahasiswa\SearchController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
+
 Route::get('/', function () {
+    // Redirect authenticated users to their dashboard
+    if (Auth::check()) {
+        return redirect()->route('dashboard');
+    }
+    
     return Inertia::render('Welcome', [
         'canLogin' => Route::has('login'),
         'canRegister' => Route::has('register'),
@@ -26,7 +34,7 @@ Route::get('/dashboard', function () {
     
     return match ($user->role) {
         'admin' => redirect()->route('admin.dashboard'),
-        'dosen' => redirect()->route('dosen.dashboard'),
+        'dosen' => redirect()->route('dosen.thesis.index'),
         'mahasiswa' => redirect()->route('mahasiswa.dashboard'),
         default => redirect()->route('login'),
     };
@@ -36,12 +44,15 @@ Route::get('/dashboard', function () {
 Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
     Route::resource('users', UserController::class);
+    Route::resource('thesis', AdminThesisController::class);
 });
 
 // Dosen Routes
 Route::middleware(['auth', 'verified', 'role:dosen'])->prefix('dosen')->name('dosen.')->group(function () {
-    Route::get('/dashboard', [DosenController::class, 'dashboard'])->name('dashboard');
-    Route::resource('thesis', DosenThesisController::class);
+    Route::get('/dashboard', function () {
+        return redirect()->route('dosen.thesis.index');
+    })->name('dashboard');
+    Route::resource('thesis', DosenThesisController::class)->except(['create', 'store']);
 });
 
 // Mahasiswa Routes

@@ -33,6 +33,10 @@
 
 ## 👨‍🏫 DOSEN (5 Users)
 
+> **📝 Important Note**: Dosen memiliki akses **READ-ONLY** yang sama dengan Mahasiswa.  
+> Hanya dapat **browse dan search** skripsi. Tidak bisa upload, edit, atau delete.  
+> Untuk mengelola skripsi, hubungi **Admin**.
+
 ### 1. Dr. Ahmad Fauzi, M.Kom
 - **Nama**: Dr. Ahmad Fauzi, M.Kom
 - **Email**: `ahmad@semantik.com`

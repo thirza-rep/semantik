@@ -1,9 +1,6 @@
 import { Head, Link } from '@inertiajs/react';
-import { useState } from 'react';
 
 export default function Welcome({ auth }) {
-    const [selectedRole, setSelectedRole] = useState(null);
-
     const roles = [
         {
             name: 'Admin',
@@ -13,17 +10,17 @@ export default function Welcome({ auth }) {
             email: 'admin@semantik.com',
             password: 'admin123',
             color: 'from-pink-500 to-pink-600',
-            features: ['Kelola Users', 'Lihat Statistik', 'Assign Roles']
+            features: ['Kelola Users', 'Kelola Thesis', 'Full CRUD Access']
         },
         {
             name: 'Dosen',
             role: 'dosen',
             icon: '👨‍🏫',
-            description: 'Upload dan kelola skripsi',
+            description: 'Browse dan cari skripsi',
             email: 'ahmad@semantik.com',
             password: 'dosen123',
             color: 'from-pink-400 to-pink-500',
-            features: ['Upload Skripsi', 'Edit Skripsi', 'Lihat Download']
+            features: ['Browse Skripsi', 'Search & Filter', 'Download PDF']
         },
         {
             name: 'Mahasiswa',
@@ -47,9 +44,20 @@ export default function Welcome({ auth }) {
                     <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                         <div className="flex items-center justify-between py-6">
                             <div className="flex items-center gap-3">
-                                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white/20 backdrop-blur-lg">
-                                    <span className="text-2xl">📚</span>
+                                <div className="flex items-center gap-2">
+                                    <img
+                                        src="/BinaInsan.png"
+                                        alt="Bina Insan"
+                                        className="h-9 w-auto"
+
+                                        style={{
+                                            zoom: 2,
+                                            border: '2px solid white',
+                                            borderRadius: '10%',
+                                        }}
+                                    />
                                 </div>
+
                                 <div>
                                     <h1 className="text-xl font-bold text-white drop-shadow-lg">
                                         Web Semantik
@@ -101,9 +109,7 @@ export default function Welcome({ auth }) {
                             {roles.map((roleData) => (
                                 <div
                                     key={roleData.role}
-                                    className={`glass-card rounded-2xl p-8 hover:scale-105 transition-all duration-300 cursor-pointer ${selectedRole === roleData.role ? 'ring-4 ring-white shadow-2xl' : ''
-                                        }`}
-                                    onClick={() => setSelectedRole(selectedRole === roleData.role ? null : roleData.role)}
+                                    className="glass-card rounded-2xl p-8 hover:scale-105 transition-all duration-300"
                                 >
                                     <div className="text-center mb-6">
                                         <div className={`inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br ${roleData.color} mb-4 shadow-lg`}>
@@ -128,24 +134,20 @@ export default function Welcome({ auth }) {
                                         ))}
                                     </div>
 
-                                    {selectedRole === roleData.role && (
-                                        <div className="animate-fade-in bg-pink-50 rounded-lg p-4 mb-4">
-                                            <p className="text-xs font-semibold text-pink-700 mb-2">
-                                                Demo Account:
-                                            </p>
-                                            <div className="space-y-1 text-xs text-gray-700">
-                                                <p><strong>Email:</strong> {roleData.email}</p>
-                                                <p><strong>Password:</strong> {roleData.password}</p>
-                                            </div>
-                                        </div>
-                                    )}
 
-                                    <Link
-                                        href={route('login')}
-                                        className={`block w-full px-6 py-3 bg-gradient-to-r ${roleData.color} text-white rounded-lg font-medium hover:shadow-xl transition-all duration-300 text-center`}
-                                    >
-                                        Login sebagai {roleData.name}
-                                    </Link>
+
+                                    {/* Dual Button System */}
+                                    <div className="space-y-2">
+                                        
+
+                                        {/* Manual Login Button (Secondary) */}
+                                        <Link
+                                            href={route('login')}
+                                            className="block w-full px-6 py-2 bg-white border-2 border-pink-200 text-pink-600 rounded-lg font-medium hover:bg-pink-50 transition-all duration-300 text-center text-sm"
+                                        >
+                                            📝 Login Manual
+                                        </Link>
+                                    </div>
                                 </div>
                             ))}
                         </div>

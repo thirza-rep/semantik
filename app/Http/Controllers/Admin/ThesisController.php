@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Dosen;
+namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Thesis;
@@ -12,7 +12,6 @@ class ThesisController extends Controller
 {
     public function index(Request $request)
     {
-        // Dosen can now view all theses
         $query = Thesis::with('user');
 
         // Search by title, author, description, keywords
@@ -71,7 +70,7 @@ class ThesisController extends Controller
             ->pluck('year')
             ->toArray();
 
-        return Inertia::render('Dosen/Thesis/Index', [
+        return Inertia::render('Admin/Thesis/Index', [
             'theses' => $theses,
             'categories' => $categories ?: [],
             'years' => $years ?: [],
@@ -86,25 +85,8 @@ class ThesisController extends Controller
         ]);
     }
 
-
-
-    public function show($id)
+    public function create()
     {
-        $thesis = Thesis::findOrFail($id);
-        
-        // Allowed to view any thesis (read-only)
-        return Inertia::render('Dosen/Thesis/Show', [
-            'thesis' => $thesis->load('user'),
-        ]);
-    }
-
-    public function edit(Thesis $thesis)
-    {
-        // Ensure dosen can only edit their own theses
-        if ($thesis->user_id !== auth()->id()) {
-            abort(403, 'Unauthorized action.');
-        }
-
         $categories = [
             'Web Semantik',
             'Information Retrieval',
@@ -118,7 +100,64 @@ class ThesisController extends Controller
             'Blockchain',
         ];
 
-        return Inertia::render('Dosen/Thesis/Edit', [
+        return Inertia::render('Admin/Thesis/Create', [
+            'categories' => $categories,
+        ]);
+    }
+
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'year' => 'required|integer|min:2000|max:' . (date('Y') + 1),
+            'description' => 'required|string',
+            'category' => 'required|string|max:100',
+            'keywords' => 'nullable|string',
+            'author_name' => 'required|string|max:255',
+            'file' => 'required|file|mimes:pdf|max:10240', // 10MB max
+        ]);
+
+        // Handle file upload
+        if ($request->hasFile('file')) {
+            $file = $request->file('file');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $path = $file->storeAs('theses', $filename, 'public');
+            
+            $validated['file_path'] = $path;
+            $validated['file_size'] = $file->getSize();
+        }
+
+        $validated['user_id'] = auth()->id();
+
+        Thesis::create($validated);
+
+        return redirect()->route('admin.thesis.index')
+            ->with('success', 'Skripsi berhasil ditambahkan');
+    }
+
+    public function show(Thesis $thesis)
+    {
+        return Inertia::render('Admin/Thesis/Show', [
+            'thesis' => $thesis->load('user'),
+        ]);
+    }
+
+    public function edit(Thesis $thesis)
+    {
+        $categories = [
+            'Web Semantik',
+            'Information Retrieval',
+            'Knowledge Management',
+            'Semantic Web',
+            'Linked Data',
+            'Machine Learning',
+            'Deep Learning',
+            'Natural Language Processing',
+            'E-Learning',
+            'Blockchain',
+        ];
+
+        return Inertia::render('Admin/Thesis/Edit', [
             'thesis' => $thesis,
             'categories' => $categories,
         ]);
@@ -126,11 +165,6 @@ class ThesisController extends Controller
 
     public function update(Request $request, Thesis $thesis)
     {
-        // Ensure dosen can only update their own theses
-        if ($thesis->user_id !== auth()->id()) {
-            abort(403, 'Unauthorized action.');
-        }
-
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'year' => 'required|integer|min:2000|max:' . (date('Y') + 1),
@@ -158,17 +192,12 @@ class ThesisController extends Controller
 
         $thesis->update($validated);
 
-        return redirect()->route('dosen.thesis.index')
+        return redirect()->route('admin.thesis.index')
             ->with('success', 'Skripsi berhasil diupdate');
     }
 
     public function destroy(Thesis $thesis)
     {
-        // Ensure dosen can only delete their own theses
-        if ($thesis->user_id !== auth()->id()) {
-            abort(403, 'Unauthorized action.');
-        }
-
         // Delete file
         if ($thesis->file_path) {
             Storage::disk('public')->delete($thesis->file_path);
@@ -176,7 +205,7 @@ class ThesisController extends Controller
 
         $thesis->delete();
 
-        return redirect()->route('dosen.thesis.index')
+        return redirect()->route('admin.thesis.index')
             ->with('success', 'Skripsi berhasil dihapus');
     }
 }

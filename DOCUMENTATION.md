@@ -279,11 +279,13 @@ $categories = [
 
 **Permissions**:
 - View personal dashboard
-- Upload new thesis
-- Edit own thesis
-- Delete own thesis
-- View own thesis statistics
-- Download thesis files
+- **Browse all theses** (read-only)
+- **Search and filter theses**
+- **View thesis details**
+- **Download PDF files**
+- **Same as Mahasiswa** (no create/edit/delete access)
+
+> **Note**: Dosen tidak dapat mengupload atau mengelola thesis. Hanya Admin yang memiliki akses CRUD.
 
 ### Mahasiswa
 **Routes**: `/mahasiswa/*`
@@ -552,19 +554,21 @@ POST /admin/users                  - Store new user
 GET  /admin/users/{id}/edit        - Edit user form
 PUT  /admin/users/{id}             - Update user
 DELETE /admin/users/{id}           - Delete user
+
+GET  /admin/thesis                 - All theses list
+GET  /admin/thesis/create          - Create thesis form
+POST /admin/thesis                 - Store new thesis
+GET  /admin/thesis/{id}            - View thesis
+GET  /admin/thesis/{id}/edit       - Edit thesis form
+PUT  /admin/thesis/{id}            - Update thesis
+DELETE /admin/thesis/{id}          - Delete thesis
 ```
 
 ### Dosen Routes
 ```
 GET  /dosen/dashboard              - Dosen dashboard
-GET  /dosen/thesis                 - Thesis list
-GET  /dosen/thesis/create          - Upload thesis form
-POST /dosen/thesis                 - Store thesis
-GET  /dosen/thesis/{id}            - View thesis
-GET  /dosen/thesis/{id}/edit       - Edit thesis form
-PUT  /dosen/thesis/{id}            - Update thesis
-DELETE /dosen/thesis/{id}          - Delete thesis
-GET  /dosen/thesis/{id}/download   - Download PDF
+GET  /dosen/thesis                 - Browse theses (read-only)
+GET  /dosen/thesis/{id}            - View thesis detail (read-only)
 ```
 
 ### Mahasiswa Routes

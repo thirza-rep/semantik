@@ -11,7 +11,7 @@ export default function Login({ status, canResetPassword }) {
         email: '',
         password: '',
         remember: false,
-    });
+    }); 
 
     const submit = (e) => {
         e.preventDefault();
@@ -105,16 +105,9 @@ export default function Login({ status, canResetPassword }) {
                         {processing ? 'Memproses...' : 'Masuk sekarang'}
                     </PrimaryButton>
 
-                    <div className="mt-4 text-center">
-                        <p className="text-sm text-gray-500">
-                            Belum punya akun?{' '}
-                            <Link href={route('register')} className="text-pink-600 hover:text-pink-800 font-bold hover:underline">
-                                Daftar disini
-                            </Link>
-                        </p>
-                    </div>
+
                 </div>
             </form>
-        </GuestLayout>
+        </GuestLayout >
     );
 }

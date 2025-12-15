@@ -6,16 +6,15 @@ import TextInput from '@/Components/TextInput';
 import { Head, useForm, Link } from '@inertiajs/react';
 import { useState } from 'react';
 
-export default function EditThesis({ thesis, categories }) {
+export default function CreateThesis({ categories }) {
     const { data, setData, post, processing, errors, progress } = useForm({
-        title: thesis.title || '',
-        year: thesis.year || new Date().getFullYear(),
-        description: thesis.description || '',
-        category: thesis.category || '',
-        keywords: thesis.keywords || '',
-        author_name: thesis.author_name || '',
+        title: '',
+        year: new Date().getFullYear(),
+        description: '',
+        category: '',
+        keywords: '',
+        author_name: '',
         file: null,
-        _method: 'PUT',
     });
 
     const [dragActive, setDragActive] = useState(false);
@@ -57,7 +56,7 @@ export default function EditThesis({ thesis, categories }) {
 
     const submit = (e) => {
         e.preventDefault();
-        post(route('dosen.thesis.update', thesis.id));
+        post(route('admin.thesis.store'));
     };
 
     const currentYear = new Date().getFullYear();
@@ -68,10 +67,10 @@ export default function EditThesis({ thesis, categories }) {
             header={
                 <div className="flex items-center justify-between">
                     <h2 className="text-xl font-semibold leading-tight text-gray-800">
-                        Edit Skripsi
+                        Upload Skripsi Baru
                     </h2>
                     <Link
-                        href={route('dosen.thesis.show', thesis.id)}
+                        href={route('admin.thesis.index')}
                         className="text-pink-600 hover:text-pink-700 font-medium"
                     >
                         ← Kembali
@@ -79,17 +78,17 @@ export default function EditThesis({ thesis, categories }) {
                 </div>
             }
         >
-            <Head title="Edit Skripsi" />
+            <Head title="Upload Skripsi" />
 
             <div className="py-12 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-pink-50 to-white min-h-screen">
                 <div className="mx-auto max-w-4xl">
                     <div className="glass-card rounded-xl p-8 animate-fade-in">
                         <div className="mb-6">
                             <h1 className="text-2xl font-bold text-gray-800 mb-2">
-                                Edit Skripsi
+                                Upload Skripsi Baru
                             </h1>
                             <p className="text-gray-600">
-                                Update informasi skripsi
+                                Lengkapi informasi skripsi dan upload file PDF
                             </p>
                         </div>
 
@@ -171,14 +170,17 @@ export default function EditThesis({ thesis, categories }) {
                                     value={data.keywords}
                                     className="mt-1 block w-full border-pink-200 focus:border-pink-500 focus:ring-pink-500"
                                     onChange={(e) => setData('keywords', e.target.value)}
-                                    placeholder="Pisahkan dengan koma"
+                                    placeholder="Pisahkan dengan koma, contoh: web semantik, ontologi, RDF"
                                 />
                                 <InputError message={errors.keywords} className="mt-2" />
+                                <p className="mt-1 text-sm text-gray-500">
+                                    Masukkan kata kunci yang relevan untuk memudahkan pencarian
+                                </p>
                             </div>
 
-                            {/* Abstract */}
+                            {/* Description */}
                             <div>
-                                <InputLabel htmlFor="description" value="Abstrak *" className="text-gray-700" />
+                                <InputLabel htmlFor="description" value="Deskripsi/Abstrak *" className="text-gray-700" />
                                 <textarea
                                     id="description"
                                     value={data.description}
@@ -186,27 +188,19 @@ export default function EditThesis({ thesis, categories }) {
                                     className="mt-1 block w-full border-pink-200 focus:border-pink-500 focus:ring-pink-500 rounded-md shadow-sm"
                                     rows="6"
                                     required
+                                    placeholder="Tuliskan deskripsi atau abstrak skripsi..."
                                 />
                                 <InputError message={errors.description} className="mt-2" />
                             </div>
 
-                            {/* File Upload (Optional for Edit) */}
+                            {/* File Upload */}
                             <div>
-                                <InputLabel htmlFor="file" value="Ganti File PDF (Opsional)" className="text-gray-700 mb-2" />
-
-                                <div className="mb-4 bg-pink-50 border border-pink-200 rounded-lg p-4">
-                                    <p className="text-sm text-gray-700">
-                                        <strong>File saat ini:</strong> {thesis.file_path.split('/').pop()}
-                                    </p>
-                                    <p className="text-xs text-gray-600 mt-1">
-                                        Upload file baru jika ingin mengganti file yang ada
-                                    </p>
-                                </div>
+                                <InputLabel htmlFor="file" value="File PDF Skripsi *" className="text-gray-700 mb-2" />
 
                                 <div
                                     className={`relative border-2 border-dashed rounded-xl p-8 text-center transition-all duration-300 ${dragActive
-                                        ? 'border-pink-500 bg-pink-50'
-                                        : 'border-pink-200 hover:border-pink-400 bg-white'
+                                            ? 'border-pink-500 bg-pink-50'
+                                            : 'border-pink-200 hover:border-pink-400 bg-white'
                                         }`}
                                     onDragEnter={handleDrag}
                                     onDragLeave={handleDrag}
@@ -245,16 +239,19 @@ export default function EditThesis({ thesis, categories }) {
                                                     <span className="font-medium">{fileName}</span>
                                                 </div>
                                                 <p className="text-sm text-gray-500">
-                                                    File baru akan mengganti file lama
+                                                    Klik atau drag & drop untuk mengganti file
                                                 </p>
                                             </div>
                                         ) : (
                                             <div className="space-y-2">
                                                 <p className="text-lg font-medium text-gray-700">
-                                                    Drag & drop file PDF baru di sini
+                                                    Drag & drop file PDF di sini
                                                 </p>
                                                 <p className="text-sm text-gray-500">
                                                     atau klik untuk memilih file
+                                                </p>
+                                                <p className="text-xs text-gray-400">
+                                                    Maksimal 10MB
                                                 </p>
                                             </div>
                                         )}
@@ -269,7 +266,7 @@ export default function EditThesis({ thesis, categories }) {
                                 <div className="bg-pink-50 border border-pink-200 rounded-lg p-4">
                                     <div className="flex items-center justify-between mb-2">
                                         <span className="text-sm font-medium text-pink-700">
-                                            Updating...
+                                            Uploading...
                                         </span>
                                         <span className="text-sm font-medium text-pink-700">
                                             {progress.percentage}%
@@ -287,7 +284,7 @@ export default function EditThesis({ thesis, categories }) {
                             {/* Submit Buttons */}
                             <div className="flex items-center justify-end gap-4 pt-6 border-t border-pink-100">
                                 <Link
-                                    href={route('dosen.thesis.show', thesis.id)}
+                                    href={route('admin.thesis.index')}
                                     className="px-6 py-2 border-2 border-pink-500 text-pink-600 rounded-lg font-medium hover:bg-pink-50 transition-all duration-300"
                                 >
                                     Batal
@@ -296,7 +293,7 @@ export default function EditThesis({ thesis, categories }) {
                                     className="px-6 py-2 bg-gradient-to-r from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700"
                                     disabled={processing}
                                 >
-                                    {processing ? 'Updating...' : 'Update Skripsi'}
+                                    {processing ? 'Uploading...' : 'Upload Skripsi'}
                                 </PrimaryButton>
                             </div>
                         </form>

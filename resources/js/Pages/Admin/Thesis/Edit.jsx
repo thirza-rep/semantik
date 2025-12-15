@@ -57,7 +57,7 @@ export default function EditThesis({ thesis, categories }) {
 
     const submit = (e) => {
         e.preventDefault();
-        post(route('dosen.thesis.update', thesis.id));
+        post(route('admin.thesis.update', thesis.id));
     };
 
     const currentYear = new Date().getFullYear();
@@ -71,7 +71,7 @@ export default function EditThesis({ thesis, categories }) {
                         Edit Skripsi
                     </h2>
                     <Link
-                        href={route('dosen.thesis.show', thesis.id)}
+                        href={route('admin.thesis.show', thesis.id)}
                         className="text-pink-600 hover:text-pink-700 font-medium"
                     >
                         ← Kembali
@@ -287,7 +287,7 @@ export default function EditThesis({ thesis, categories }) {
                             {/* Submit Buttons */}
                             <div className="flex items-center justify-end gap-4 pt-6 border-t border-pink-100">
                                 <Link
-                                    href={route('dosen.thesis.show', thesis.id)}
+                                    href={route('admin.thesis.show', thesis.id)}
                                     className="px-6 py-2 border-2 border-pink-500 text-pink-600 rounded-lg font-medium hover:bg-pink-50 transition-all duration-300"
                                 >
                                     Batal

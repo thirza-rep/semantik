@@ -5,6 +5,36 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.0] - 2025-12-15
+
+### 🔴 BREAKING CHANGES
+- **Dosen Role**: Changed from full CRUD to **READ-ONLY** access
+- Dosen now has same permissions as Mahasiswa (browse & search only)
+- Only Admin can manage (create/edit/delete) thesis
+
+### ✨ Added
+- **Quick Login** on Welcome page (one-click demo login)
+- **Always-Visible Credentials** on role cards
+- **Dual Button System**: Quick Login + Manual Login
+- **Role-Based Navigation Menu** in AuthenticatedLayout
+- **Admin Thesis Management**: Full CRUD for all theses
+
+### 🔄 Changed
+- **Dosen\\ThesisController**: Converted to read-only (2 methods: index, show)
+- **Routes**: Dosen routes limited to index/show only
+- **UI**: Removed Create/Edit/Delete buttons from Dosen pages
+
+### 🗑️ Removed
+- Dosen upload/edit/delete thesis capability
+- Routes: `/dosen/thesis/create`, `/dosen/thesis/store`, etc.
+
+### 📝 Updated
+- Documentation to reflect new Dosen permissions
+- Welcome page with improved UX
+- Navigation menu based on roles
+
+---
+
 ## [1.0.0] - 2024-12-13
 
 ### 🎉 Initial Release

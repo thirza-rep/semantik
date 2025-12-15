@@ -19,17 +19,65 @@ export default function AuthenticatedLayout({ header, children }) {
                         <div className="flex">
                             <div className="flex shrink-0 items-center">
                                 <Link href="/">
-                                    <ApplicationLogo className="block h-9 w-auto fill-current text-pink-600 hover:text-pink-700 transition-colors" />
+                                    <img
+                                        src="/BinaInsan.png"
+                                        alt="Bina Insan"
+                                        className="block h-9 w-auto transition-opacity hover:opacity-90"
+                                        style={{
+                                            zoom: 1.7,
+                                            border: '1px solid white',
+                                            borderRadius: '10%',
+                                        }}
+                                    />
                                 </Link>
+
                             </div>
 
                             <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                                <NavLink
-                                    href={route('dashboard')}
-                                    active={route().current('dashboard')}
-                                >
-                                    Dashboard
-                                </NavLink>
+                                {/* Dosen Navigation - Replaces Dashboard */}
+                                {user.role === 'dosen' ? (
+                                    <NavLink
+                                        href={route('dosen.thesis.index')}
+                                        active={route().current('dosen.thesis.*')}
+                                    >
+                                        Daftar Skripsi
+                                    </NavLink>
+                                ) : (
+                                    <NavLink
+                                        href={route('dashboard')}
+                                        active={route().current('dashboard')}
+                                    >
+                                        Dashboard
+                                    </NavLink>
+                                )}
+
+                                {/* Admin Navigation */}
+                                {user.role === 'admin' && (
+                                    <>
+                                        <NavLink
+                                            href={route('admin.users.index')}
+                                            active={route().current('admin.users.*')}
+                                        >
+                                            Users
+                                        </NavLink>
+                                        <NavLink
+                                            href={route('admin.thesis.index')}
+                                            active={route().current('admin.thesis.*')}
+                                        >
+                                            Thesis
+                                        </NavLink>
+                                    </>
+                                )}
+
+                                {/* Mahasiswa Navigation */}
+                                {user.role === 'mahasiswa' && (
+                                    <NavLink
+                                        href={route('mahasiswa.search')}
+                                        active={route().current('mahasiswa.search') || route().current('mahasiswa.thesis.*')}
+                                    >
+                                        Search Thesis
+                                    </NavLink>
+                                )}
                             </div>
                         </div>
 
@@ -128,12 +176,49 @@ export default function AuthenticatedLayout({ header, children }) {
                     }
                 >
                     <div className="space-y-1 pb-3 pt-2">
-                        <ResponsiveNavLink
-                            href={route('dashboard')}
-                            active={route().current('dashboard')}
-                        >
-                            Dashboard
-                        </ResponsiveNavLink>
+                        {user.role === 'dosen' ? (
+                            <ResponsiveNavLink
+                                href={route('dosen.thesis.index')}
+                                active={route().current('dosen.thesis.*')}
+                            >
+                                Daftar Skripsi
+                            </ResponsiveNavLink>
+                        ) : (
+                            <ResponsiveNavLink
+                                href={route('dashboard')}
+                                active={route().current('dashboard')}
+                            >
+                                Dashboard
+                            </ResponsiveNavLink>
+                        )}
+
+                        {/* Admin Mobile Navigation */}
+                        {user.role === 'admin' && (
+                            <>
+                                <ResponsiveNavLink
+                                    href={route('admin.users.index')}
+                                    active={route().current('admin.users.*')}
+                                >
+                                    Users
+                                </ResponsiveNavLink>
+                                <ResponsiveNavLink
+                                    href={route('admin.thesis.index')}
+                                    active={route().current('admin.thesis.*')}
+                                >
+                                    Thesis
+                                </ResponsiveNavLink>
+                            </>
+                        )}
+
+                        {/* Mahasiswa Mobile Navigation */}
+                        {user.role === 'mahasiswa' && (
+                            <ResponsiveNavLink
+                                href={route('mahasiswa.search')}
+                                active={route().current('mahasiswa.search') || route().current('mahasiswa.thesis.*')}
+                            >
+                                Search Thesis
+                            </ResponsiveNavLink>
+                        )}
                     </div>
 
                     <div className="border-t border-pink-200 pb-1 pt-4">
