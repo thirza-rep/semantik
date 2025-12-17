@@ -31,6 +31,10 @@
             "dest": "/public/robots.txt"
         },
         {
+            "src": "/BinaInsan.png",
+            "dest": "/public/BinaInsan.png"
+        },
+        {
             "src": "/(.*)",
             "dest": "/api/index.php"
         }
