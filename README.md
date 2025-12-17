@@ -68,16 +68,11 @@ Visit `http://localhost:8000`
 
 | Role | Email | Password |
 |------|-------|----------|
-| **Admin** | admin@semantik.com | admin123 |
-| **Dosen** | ahmad@semantik.com | dosen123 |
-| **Mahasiswa** | budi@semantik.com | mahasiswa123 |
+| **Admin** | admin@semantik.com | pw: password |
+| **Dosen** | dosen@semantik.com | pw: password |
+| **Mahasiswa** | mahasiswa@semantik.com | pw: password |
 
 ### All Available Accounts (17 Users Total)
-
-**📋 Complete List:**
-- **Admin**: 2 users (admin@semantik.com, admin.backup@semantik.com)
-- **Dosen**: 5 users (ahmad, siti, budi.dosen, dewi.dosen, eko @semantik.com)
-- **Mahasiswa**: 10 users (budi, dewi, andi, sari, rudi, fitri, agus, rina, doni, maya @semantik.com)
 
 **📖 Full Details**: See [USERS.md](USERS.md) for complete list with NIM/NIDN
 **⚡ Quick Reference**: See [QUICK_REFERENCE.md](QUICK_REFERENCE.md) for quick access
