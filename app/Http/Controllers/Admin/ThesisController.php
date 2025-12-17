@@ -121,7 +121,7 @@ class ThesisController extends Controller
         if ($request->hasFile('file')) {
             $file = $request->file('file');
             $filename = time() . '_' . $file->getClientOriginalName();
-            $path = $file->storeAs('theses', $filename, 'public');
+            $path = $file->storeAs('theses', $filename);
             
             $validated['file_path'] = $path;
             $validated['file_size'] = $file->getSize();
@@ -182,12 +182,12 @@ class ThesisController extends Controller
         if ($request->hasFile('file')) {
             // Delete old file
             if ($thesis->file_path) {
-                Storage::disk('public')->delete($thesis->file_path);
+                Storage::delete($thesis->file_path);
             }
 
             $file = $request->file('file');
             $filename = time() . '_' . $file->getClientOriginalName();
-            $path = $file->storeAs('theses', $filename, 'public');
+            $path = $file->storeAs('theses', $filename);
             
             $validated['file_path'] = $path;
             $validated['file_size'] = $file->getSize();
@@ -204,7 +204,7 @@ class ThesisController extends Controller
         $thesis = Thesis::findOrFail($id);
         // Delete file
         if ($thesis->file_path) {
-            Storage::disk('public')->delete($thesis->file_path);
+            Storage::delete($thesis->file_path);
         }
 
         $thesis->delete();

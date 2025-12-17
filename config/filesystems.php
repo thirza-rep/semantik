@@ -56,6 +56,18 @@ return [
             'throw' => false,
         ],
 
+        'supabase' => [
+            'driver' => 's3',
+            'key' => env('SUPABASE_KEY'),
+            'secret' => env('SUPABASE_SECRET'),
+            'region' => env('SUPABASE_REGION', 'ap-south-1'),
+            'bucket' => env('SUPABASE_BUCKET'),
+            'url' => env('SUPABASE_URL') . '/storage/v1/object/public/' . env('SUPABASE_BUCKET'),
+            'endpoint' => env('SUPABASE_ENDPOINT'),
+            'use_path_style_endpoint' => false,
+            'throw' =>false,
+        ],
+
     ],
 
     /*
