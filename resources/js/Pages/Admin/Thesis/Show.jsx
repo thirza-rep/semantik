@@ -147,10 +147,10 @@ export default function ShowThesis({ thesis }) {
                                     </div>
                                     <div>
                                         <p className="font-medium text-gray-800">
-                                            {thesis.file_path.split('/').pop()}
+                                            {thesis.file_path ? thesis.file_path.split('/').pop() : 'File tidak tersedia'}
                                         </p>
                                         <p className="text-sm text-gray-600">
-                                            Ukuran: {(thesis.file_size / 1024 / 1024).toFixed(2)} MB
+                                            Ukuran: {thesis.file_size ? (thesis.file_size / 1024 / 1024).toFixed(2) : '0'} MB
                                         </p>
                                     </div>
                                 </div>
@@ -174,7 +174,7 @@ export default function ShowThesis({ thesis }) {
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                                 <div>
                                     <span className="text-gray-600">Diupload oleh:</span>
-                                    <p className="font-medium text-gray-800">{thesis.user.name}</p>
+                                    <p className="font-medium text-gray-800">{thesis.user ? thesis.user.name : 'Tidak Diketahui'}</p>
                                 </div>
                                 <div>
                                     <span className="text-gray-600">Tanggal Upload:</span>

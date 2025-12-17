@@ -135,15 +135,17 @@ class ThesisController extends Controller
             ->with('success', 'Skripsi berhasil ditambahkan');
     }
 
-    public function show(Thesis $thesis)
+    public function show($id)
     {
+        $thesis = Thesis::findOrFail($id);
         return Inertia::render('Admin/Thesis/Show', [
             'thesis' => $thesis->load('user'),
         ]);
     }
 
-    public function edit(Thesis $thesis)
+    public function edit($id)
     {
+        $thesis = Thesis::findOrFail($id);
         $categories = [
             'Web Semantik',
             'Information Retrieval',
@@ -163,8 +165,9 @@ class ThesisController extends Controller
         ]);
     }
 
-    public function update(Request $request, Thesis $thesis)
+    public function update(Request $request, $id)
     {
+        $thesis = Thesis::findOrFail($id);
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'year' => 'required|integer|min:2000|max:' . (date('Y') + 1),
@@ -196,8 +199,9 @@ class ThesisController extends Controller
             ->with('success', 'Skripsi berhasil diupdate');
     }
 
-    public function destroy(Thesis $thesis)
+    public function destroy($id)
     {
+        $thesis = Thesis::findOrFail($id);
         // Delete file
         if ($thesis->file_path) {
             Storage::disk('public')->delete($thesis->file_path);

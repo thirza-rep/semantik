@@ -196,7 +196,7 @@ export default function EditThesis({ thesis, categories }) {
 
                                 <div className="mb-4 bg-pink-50 border border-pink-200 rounded-lg p-4">
                                     <p className="text-sm text-gray-700">
-                                        <strong>File saat ini:</strong> {thesis.file_path.split('/').pop()}
+                                        <strong>File saat ini:</strong> {thesis.file_path ? thesis.file_path.split('/').pop() : 'Tidak ada file'}
                                     </p>
                                     <p className="text-xs text-gray-600 mt-1">
                                         Upload file baru jika ingin mengganti file yang ada
