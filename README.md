@@ -279,6 +279,6 @@ This project is licensed under the MIT License.
 
 ---
 
-**Made with ❤️ by Web Semantik Team**
+**Made with ❤️ by Codevitefits Team**
 
-© 2024 All Rights Reserved
+© 2026 All Rights Reserved
