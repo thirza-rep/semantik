@@ -11,6 +11,12 @@ export default function AuthenticatedLayout({ header, children }) {
     const [showingNavigationDropdown, setShowingNavigationDropdown] =
         useState(false);
 
+    // ✅ Route dashboard sesuai role (menghindari Ziggy error route 'dashboard' tidak ada)
+    const dashboardRouteName =
+        user.role === 'admin' ? 'admin.dashboard' :
+        user.role === 'dosen' ? 'dosen.dashboard' :
+        'mahasiswa.dashboard';
+
     return (
         <div className="min-h-screen bg-gradient-to-br from-pink-50 via-white to-pink-100">
             <nav className="glass-card border-b border-pink-100 sticky top-0 z-50">
@@ -30,7 +36,6 @@ export default function AuthenticatedLayout({ header, children }) {
                                         }}
                                     />
                                 </Link>
-
                             </div>
 
                             <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
@@ -44,8 +49,8 @@ export default function AuthenticatedLayout({ header, children }) {
                                     </NavLink>
                                 ) : (
                                     <NavLink
-                                        href={route('dashboard')}
-                                        active={route().current('dashboard')}
+                                        href={route(dashboardRouteName)}
+                                        active={route().current(dashboardRouteName)}
                                     >
                                         Dashboard
                                     </NavLink>
@@ -73,7 +78,10 @@ export default function AuthenticatedLayout({ header, children }) {
                                 {user.role === 'mahasiswa' && (
                                     <NavLink
                                         href={route('mahasiswa.search')}
-                                        active={route().current('mahasiswa.search') || route().current('mahasiswa.thesis.*')}
+                                        active={
+                                            route().current('mahasiswa.search') ||
+                                            route().current('mahasiswa.thesis.*')
+                                        }
                                     >
                                         Search Thesis
                                     </NavLink>
@@ -109,9 +117,7 @@ export default function AuthenticatedLayout({ header, children }) {
                                     </Dropdown.Trigger>
 
                                     <Dropdown.Content>
-                                        <Dropdown.Link
-                                            href={route('profile.edit')}
-                                        >
+                                        <Dropdown.Link href={route('profile.edit')}>
                                             Profile
                                         </Dropdown.Link>
                                         <Dropdown.Link
@@ -185,8 +191,8 @@ export default function AuthenticatedLayout({ header, children }) {
                             </ResponsiveNavLink>
                         ) : (
                             <ResponsiveNavLink
-                                href={route('dashboard')}
-                                active={route().current('dashboard')}
+                                href={route(dashboardRouteName)}
+                                active={route().current(dashboardRouteName)}
                             >
                                 Dashboard
                             </ResponsiveNavLink>
@@ -214,7 +220,10 @@ export default function AuthenticatedLayout({ header, children }) {
                         {user.role === 'mahasiswa' && (
                             <ResponsiveNavLink
                                 href={route('mahasiswa.search')}
-                                active={route().current('mahasiswa.search') || route().current('mahasiswa.thesis.*')}
+                                active={
+                                    route().current('mahasiswa.search') ||
+                                    route().current('mahasiswa.thesis.*')
+                                }
                             >
                                 Search Thesis
                             </ResponsiveNavLink>

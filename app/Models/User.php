@@ -80,4 +80,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Thesis::class);
     }
+
+    public function approvedClearances()
+    {
+        return $this->hasMany(ThesisClearance::class, 'approved_by');
+    }
 }

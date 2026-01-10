@@ -14,6 +14,9 @@ export default function EditThesis({ thesis, categories }) {
         category: thesis.category || '',
         keywords: thesis.keywords || '',
         author_name: thesis.author_name || '',
+        nim: thesis.nim || '',
+        prodi: thesis.prodi || '',
+        fakultas: thesis.fakultas || '',
         file: null,
         _method: 'PUT',
     });
@@ -120,6 +123,50 @@ export default function EditThesis({ thesis, categories }) {
                                     required
                                 />
                                 <InputError message={errors.author_name} className="mt-2" />
+                            </div>
+
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                {/* NIM */}
+                                <div>
+                                    <InputLabel htmlFor="nim" value="NIM *" className="text-gray-700" />
+                                    <TextInput
+                                        id="nim"
+                                        type="text"
+                                        value={data.nim}
+                                        className="mt-1 block w-full border-pink-200 focus:border-pink-500 focus:ring-pink-500"
+                                        onChange={(e) => setData('nim', e.target.value)}
+                                        required
+                                    />
+                                    <InputError message={errors.nim} className="mt-2" />
+                                </div>
+
+                                {/* Prodi */}
+                                <div>
+                                    <InputLabel htmlFor="prodi" value="Program Studi *" className="text-gray-700" />
+                                    <TextInput
+                                        id="prodi"
+                                        type="text"
+                                        value={data.prodi}
+                                        className="mt-1 block w-full border-pink-200 focus:border-pink-500 focus:ring-pink-500"
+                                        onChange={(e) => setData('prodi', e.target.value)}
+                                        required
+                                    />
+                                    <InputError message={errors.prodi} className="mt-2" />
+                                </div>
+
+                                {/* Fakultas */}
+                                <div>
+                                    <InputLabel htmlFor="fakultas" value="Fakultas *" className="text-gray-700" />
+                                    <TextInput
+                                        id="fakultas"
+                                        type="text"
+                                        value={data.fakultas}
+                                        className="mt-1 block w-full border-pink-200 focus:border-pink-500 focus:ring-pink-500"
+                                        onChange={(e) => setData('fakultas', e.target.value)}
+                                        required
+                                    />
+                                    <InputError message={errors.fakultas} className="mt-2" />
+                                </div>
                             </div>
 
                             {/* Year and Category */}

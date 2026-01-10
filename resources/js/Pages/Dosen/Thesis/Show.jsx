@@ -2,13 +2,6 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, Link } from '@inertiajs/react';
 
 export default function ShowThesis({ thesis }) {
-
-
-
-    const handleDownload = () => {
-        window.location.href = route('thesis.download', thesis.id);
-    };
-
     return (
         <AuthenticatedLayout
             header={
@@ -55,13 +48,6 @@ export default function ShowThesis({ thesis }) {
                                     </svg>
                                     <span>{thesis.year}</span>
                                 </div>
-
-                                <div className="flex items-center">
-                                    <svg className="w-5 h-5 mr-2 text-pink-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                                    </svg>
-                                    <span>{thesis.download_count} downloads</span>
-                                </div>
                             </div>
                         </div>
 
@@ -96,30 +82,56 @@ export default function ShowThesis({ thesis }) {
                             </div>
                         )}
 
-                        {/* PDF Preview */}
+                        {/* PDF Preview & Approval Check */}
                         <div className="mb-8">
                             <h2 className="text-xl font-bold text-gray-800 mb-3">
-                                Preview PDF
+                                {thesis.clearance?.status === 'approved' ? 'Preview PDF (Hanya Baca)' : 'Status Persetujuan Skripsi'}
                             </h2>
-                            <div className="bg-gray-100 rounded-lg p-4">
-                                {thesis.file_url ? (
-                                    <iframe
-                                        src={thesis.file_url}
-                                        className="w-full h-[600px] rounded-lg border-2 border-pink-200"
-                                        title="PDF Preview"
-                                    />
-                                ) : (
-                                    <div className="w-full h-[300px] flex items-center justify-center text-gray-500">
-                                        Preview tidak tersedia
+
+                            {thesis.clearance?.status !== 'approved' ? (
+                                <div className="bg-yellow-50 border-2 border-dashed border-yellow-200 rounded-xl p-8 text-center">
+                                    <div className="text-4xl mb-3">🛡️</div>
+                                    <h3 className="text-lg font-bold text-yellow-800 mb-2">
+                                        Persetujuan Diperlukan
+                                    </h3>
+                                    <p className="text-sm text-yellow-700 max-w-md mx-auto">
+                                        Mahasiswa belum mengupload atau Admin belum menyetujui "Surat Bebas Pustaka" untuk skripsi ini.
+                                        Pratinjau PDF dikunci untuk keamanan.
+                                    </p>
+                                    <div className="mt-4 flex justify-center">
+                                        <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase ${!thesis.clearance ? 'bg-gray-200 text-gray-600' :
+                                            thesis.clearance.status === 'pending' ? 'bg-yellow-200 text-yellow-700' :
+                                                'bg-red-200 text-red-700'
+                                            }`}>
+                                            Status: {!thesis.clearance ? 'Belum Upload' : thesis.clearance.status}
+                                        </span>
                                     </div>
-                                )}
-                                <p className="text-xs text-gray-500 mt-2 text-center">
-                                    Preview file PDF skripsi
-                                </p>
-                            </div>
+                                </div>
+                            ) : (
+                                <div
+                                    className="bg-gray-100 rounded-lg p-4 relative"
+                                    onContextMenu={(e) => e.preventDefault()}
+                                >
+                                    {thesis.id ? (
+                                        <iframe
+                                            src={route('thesis.preview', thesis.id) + '#toolbar=0&navpanes=0'}
+                                            className="w-full h-[600px] rounded-lg border-2 border-pink-200"
+                                            title="PDF Preview"
+                                            style={{ pointerEvents: 'auto' }}
+                                        />
+                                    ) : (
+                                        <div className="w-full h-[300px] flex items-center justify-center text-gray-500">
+                                            Preview tidak tersedia
+                                        </div>
+                                    )}
+                                    <p className="text-xs text-gray-500 mt-2 text-center">
+                                        Preview file PDF skripsi (Hanya Baca)
+                                    </p>
+                                </div>
+                            )}
                         </div>
 
-                        {/* File Info */}
+                        {/* File Info - Removed Download Button for Dosen */}
                         <div className="mb-8">
                             <h2 className="text-xl font-bold text-gray-800 mb-3">
                                 File PDF
@@ -138,15 +150,6 @@ export default function ShowThesis({ thesis }) {
                                         </p>
                                     </div>
                                 </div>
-                                <button
-                                    onClick={handleDownload}
-                                    className="btn-pink flex items-center gap-2"
-                                >
-                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                                    </svg>
-                                    Download
-                                </button>
                             </div>
                         </div>
 

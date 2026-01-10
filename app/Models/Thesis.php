@@ -14,27 +14,39 @@ class Thesis extends Model
         'category',
         'keywords',
         'author_name',
+        'nim',
+        'prodi',
+        'fakultas',
         'file_path',
         'file_size',
         'download_count',
+        'letter_number',
+        'letter_issued_at',
+        'letter_issued_by',
+        'letter_file_path',
+    ];
+
+    /**
+     * The attributes that should be cast.
+     */
+    protected $casts = [
+        'letter_issued_at' => 'datetime',
     ];
 
     /**
      * Attributes to append to model's array form
      */
-    protected $appends = ['file_url', 'formatted_file_size'];
+    protected $appends = ['file_url', 'formatted_file_size', 'is_approved'];
 
     /**
      * Get the public URL for the PDF file
      */
     public function getFileUrlAttribute()
-    {
-        if ($this->file_path) {
-            // Use route for preview with authentication
-            return route('thesis.preview', $this->id);
-        }
-        return null;
-    }
+{
+    return $this->file_path
+        ? asset('storage/' . $this->file_path)
+        : null;
+}
 
     /**
      * Get the user that owns the thesis
@@ -117,5 +129,30 @@ class Thesis extends Model
     public function incrementDownloads()
     {
         $this->increment('download_count');
+    }
+
+    public function clearance()
+    {
+        return $this->hasOne(ThesisClearance::class);
+    }
+
+    public function getIsApprovedAttribute()
+    {
+        return $this->clearance && $this->clearance->status === 'approved';
+    }
+
+    public function scopeWithApprovedClearance($query)
+    {
+        return $query->whereHas('clearance', function ($q) {
+            $q->where('status', 'approved');
+        });
+    }
+
+    /**
+     * Get the admin who issued the letter
+     */
+    public function issuer()
+    {
+        return $this->belongsTo(User::class, 'letter_issued_by');
     }
 }

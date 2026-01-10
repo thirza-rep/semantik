@@ -20,7 +20,7 @@ export default function MahasiswaDashboard({ recent_thesis, popular_thesis, cate
                             Repository Skripsi
                         </h1>
                         <p className="text-lg md:text-xl text-white/90 mb-8 drop-shadow">
-                            Cari dan download skripsi yang Anda butuhkan
+                            Cariskripsi yang Anda butuhkan
                         </p>
 
                         {/* Search Bar */}
@@ -55,6 +55,30 @@ export default function MahasiswaDashboard({ recent_thesis, popular_thesis, cate
 
             <div className="py-12 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-pink-50 to-white">
                 <div className="mx-auto max-w-7xl">
+                    {/* Quick Action: Upload Skripsi */}
+                    <div className="mb-12 animate-slide-up">
+                        <div className="bg-gradient-to-r from-pink-500 to-pink-600 rounded-2xl p-8 text-white shadow-xl relative overflow-hidden group">
+                            <div className="absolute top-0 right-0 w-64 h-64 bg-white opacity-10 rounded-full transform translate-x-1/2 -translate-y-1/2 group-hover:scale-110 transition-transform duration-500"></div>
+                            <div className="absolute bottom-0 left-0 w-48 h-48 bg-black opacity-10 rounded-full transform -translate-x-1/2 translate-y-1/2 group-hover:scale-110 transition-transform duration-500"></div>
+
+                            <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
+                                <div>
+                                    <h2 className="text-2xl font-bold mb-2">Ingin Mengupload Skripsi Anda?</h2>
+                                    <p className="text-pink-100 max-w-xl">
+                                        Kontribusikan karya ilmiah Anda ke dalam repository universitas.
+                                        Pastikan data yang diinputkan benar dan file PDF sudah sesuai.
+                                    </p>
+                                </div>
+                                <Link
+                                    href={route('mahasiswa.thesis.create')}
+                                    className="px-8 py-3 bg-white text-pink-600 rounded-xl font-bold hover:bg-pink-50 hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1"
+                                >
+                                    + Upload Skripsi
+                                </Link>
+                            </div>
+                        </div>
+                    </div>
+
                     {/* Statistics */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
                         <div className="stat-card">

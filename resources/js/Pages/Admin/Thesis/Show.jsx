@@ -10,10 +10,6 @@ export default function ShowThesis({ thesis }) {
         }
     };
 
-    const handleDownload = () => {
-        window.location.href = route('thesis.download', thesis.id);
-    };
-
     return (
         <AuthenticatedLayout
             header={
@@ -69,20 +65,23 @@ export default function ShowThesis({ thesis }) {
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                                     </svg>
                                     <span className="font-medium">{thesis.author_name}</span>
+                                    {thesis.nim && <span className="text-gray-400 mx-2">|</span>}
+                                    {thesis.nim && <span className="text-gray-600">{thesis.nim}</span>}
                                 </div>
+
+                                {(thesis.prodi || thesis.fakultas) && (
+                                    <div className="w-full flex items-center text-sm text-gray-500 mt-1 pl-7">
+                                        {thesis.prodi}
+                                        {thesis.prodi && thesis.fakultas && <span className="mx-1">•</span>}
+                                        {thesis.fakultas}
+                                    </div>
+                                )}
 
                                 <div className="flex items-center">
                                     <svg className="w-5 h-5 mr-2 text-pink-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                     </svg>
                                     <span>{thesis.year}</span>
-                                </div>
-
-                                <div className="flex items-center">
-                                    <svg className="w-5 h-5 mr-2 text-pink-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                                    </svg>
-                                    <span>{thesis.download_count} downloads</span>
                                 </div>
                             </div>
                         </div>
@@ -123,14 +122,17 @@ export default function ShowThesis({ thesis }) {
                             <h2 className="text-xl font-bold text-gray-800 mb-3">
                                 Preview PDF
                             </h2>
-                            <div className="bg-gray-100 rounded-lg p-4">
+                            <div
+                                className="bg-gray-100 rounded-lg p-4 relative"
+                                onContextMenu={(e) => e.preventDefault()}
+                            >
                                 <iframe
-                                    src={thesis.file_url}
+                                    src={route('thesis.preview', thesis.id) + '#toolbar=0&navpanes=0'}
                                     className="w-full h-[600px] rounded-lg border-2 border-pink-200"
                                     title="PDF Preview"
                                 />
                                 <p className="text-xs text-gray-500 mt-2 text-center">
-                                    Preview file PDF skripsi
+                                    Preview file PDF skripsi (Fitur unduhan dinonaktifkan di halaman ini)
                                 </p>
                             </div>
                         </div>
@@ -154,15 +156,6 @@ export default function ShowThesis({ thesis }) {
                                         </p>
                                     </div>
                                 </div>
-                                <button
-                                    onClick={handleDownload}
-                                    className="btn-pink flex items-center gap-2"
-                                >
-                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                                    </svg>
-                                    Download
-                                </button>
                             </div>
                         </div>
 
@@ -203,6 +196,6 @@ export default function ShowThesis({ thesis }) {
                     </div>
                 </div>
             </div>
-        </AuthenticatedLayout>
+        </AuthenticatedLayout >
     );
 }

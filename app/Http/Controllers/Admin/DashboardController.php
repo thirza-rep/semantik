@@ -3,14 +3,13 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use Inertia\Inertia;
 use App\Models\User;
 use App\Models\Thesis;
-use Illuminate\Http\Request;
-use Inertia\Inertia;
 
-class AdminController extends Controller
+class DashboardController extends Controller
 {
-    public function dashboard()
+    public function index()
     {
         $stats = [
             'total_users' => User::count(),
@@ -19,8 +18,13 @@ class AdminController extends Controller
             'total_thesis' => Thesis::count(),
         ];
 
-        $recent_users = User::latest()->take(5)->get();
-        $recent_thesis = Thesis::with('user')->latest()->take(5)->get();
+        $recent_users = User::latest()
+            ->take(5)
+            ->get(['id', 'name', 'email', 'role', 'created_at']);
+
+        $recent_thesis = Thesis::latest()
+            ->take(5)
+            ->get(['id', 'title', 'author_name', 'year', 'created_at']);
 
         return Inertia::render('Admin/Dashboard', [
             'stats' => $stats,

@@ -90,11 +90,11 @@ class ThesisController extends Controller
 
     public function show($id)
     {
-        $thesis = Thesis::findOrFail($id);
+        $thesis = Thesis::with(['user', 'clearance'])->findOrFail($id);
         
         // Allowed to view any thesis (read-only)
         return Inertia::render('Dosen/Thesis/Show', [
-            'thesis' => $thesis->load('user'),
+            'thesis' => $thesis,
         ]);
     }
 

@@ -1,9 +1,13 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, useForm, router } from '@inertiajs/react';
 import { useState } from 'react';
 
 export default function ShowThesis({ thesis, related }) {
     const [showPdf, setShowPdf] = useState(false);
+
+    const { data, setData, post, processing, errors } = useForm({
+        file: null,
+    });
 
     const handleDownload = () => {
         window.location.href = route('thesis.download', thesis.id);
@@ -58,12 +62,6 @@ export default function ShowThesis({ thesis, related }) {
                                             <span>{thesis.year}</span>
                                         </div>
 
-                                        <div className="flex items-center">
-                                            <svg className="w-5 h-5 mr-2 text-pink-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                                            </svg>
-                                            <span>{thesis.download_count} downloads</span>
-                                        </div>
 
                                         <div className="flex items-center">
                                             <svg className="w-5 h-5 mr-2 text-pink-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -105,58 +103,145 @@ export default function ShowThesis({ thesis, related }) {
                                     </div>
                                 )}
 
-                                {/* PDF Viewer */}
+                                {/* Clearance System & PDF Viewer */}
                                 <div className="mb-8">
                                     <div className="flex items-center justify-between mb-4">
                                         <h2 className="text-xl font-bold text-gray-800">
-                                            Preview PDF
+                                            {thesis.clearance?.status === 'approved' ? 'Preview PDF (Hanya Baca)' : 'Status Persetujuan Perpustakaan'}
                                         </h2>
-                                        <button
-                                            onClick={() => setShowPdf(!showPdf)}
-                                            className="text-pink-600 hover:text-pink-700 font-medium text-sm"
-                                        >
-                                            {showPdf ? '▲ Sembunyikan' : '▼ Tampilkan'}
-                                        </button>
+                                        {thesis.clearance?.status === 'approved' && (
+                                            <button
+                                                onClick={() => setShowPdf(!showPdf)}
+                                                className="text-pink-600 hover:text-pink-700 font-medium text-sm"
+                                            >
+                                                {showPdf ? '▲ Sembunyikan' : '▼ Tampilkan'}
+                                            </button>
+                                        )}
                                     </div>
 
-                                    {showPdf && (
-                                        <div className="bg-gray-100 rounded-lg p-4 animate-fade-in">
-                                            <iframe
-                                                src={thesis.file_url}
-                                                className="w-full h-[800px] rounded-lg border-2 border-pink-200"
-                                                title="PDF Preview"
-                                            />
-                                            <p className="text-xs text-gray-500 mt-2 text-center">
-                                                Jika PDF tidak tampil, silakan download file
-                                            </p>
+                                    {/* Clearance Upload / Status Section */}
+                                    {thesis.clearance?.status !== 'approved' ? (
+                                        <div className="bg-pink-50 rounded-xl p-6 border-2 border-dashed border-pink-200">
+                                            <div className="flex items-center mb-4">
+                                                <div className={`w-12 h-12 rounded-full flex items-center justify-center mr-4 text-xl ${!thesis.clearance ? 'bg-gray-100 text-gray-500' :
+                                                    thesis.clearance.status === 'pending' ? 'bg-yellow-100 text-yellow-600' :
+                                                        'bg-red-100 text-red-600'
+                                                    }`}>
+                                                    {!thesis.clearance ? '📄' : thesis.clearance.status === 'pending' ? '⏳' : '❌'}
+                                                </div>
+                                                <div>
+                                                    <h3 className="font-bold text-gray-800">
+                                                        {!thesis.clearance ? 'Belum Upload Surat Bebas Pustaka' :
+                                                            thesis.clearance.status === 'pending' ? 'Menunggu Persetujuan Admin' :
+                                                                'Upload Ditolak'}
+                                                    </h3>
+                                                    <p className="text-sm text-gray-600">
+                                                        Dosen/Mahasiswa hanya dapat melihat PDF jika Surat Bebas Pustaka (PDF) telah disetujui Admin.
+                                                    </p>
+                                                </div>
+                                            </div>
+
+                                            {thesis.clearance?.notes && (
+                                                <div className="mb-4 p-3 bg-red-50 border border-red-100 rounded text-sm text-red-700 animate-pulse">
+                                                    <strong>Alasan Penolakan:</strong> {thesis.clearance.notes}
+                                                </div>
+                                            )}
+
+                                            {thesis.clearance?.file_path && (
+                                                <div className="mb-4 p-3 bg-pink-100/50 rounded flex items-center justify-between">
+                                                    <span className="text-xs text-pink-700 font-medium">
+                                                        📄 File Terakhir: {thesis.clearance.file_path.split('/').pop()}
+                                                    </span>
+                                                    <span className="text-[10px] text-pink-500 italic">
+                                                        Diupload: {new Date(thesis.clearance.updated_at).toLocaleDateString()}
+                                                    </span>
+                                                </div>
+                                            )}
+
+                                            <form
+                                                onSubmit={(e) => {
+                                                    e.preventDefault();
+                                                    post(route('mahasiswa.thesis.clearance.store', thesis.id), {
+                                                        forceFormData: true,
+                                                        onSuccess: () => {
+                                                            alert('Persetujuan berhasil diupload!');
+                                                            setData('file', null);
+                                                        }
+                                                    });
+                                                }}
+                                                className="mt-6"
+                                            >
+                                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                                    Upload / Ganti Surat Bebas Pustaka (PDF, Maks 2MB)
+                                                </label>
+                                                <div className="flex flex-col gap-2">
+                                                    <div className="flex gap-2">
+                                                        <input
+                                                            type="file"
+                                                            onChange={(e) => setData('file', e.target.files[0])}
+                                                            accept="application/pdf"
+                                                            required
+                                                            className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-pink-100 file:text-pink-700 hover:file:bg-pink-200"
+                                                        />
+                                                        <button
+                                                            type="submit"
+                                                            disabled={processing}
+                                                            className={`btn-pink whitespace-nowrap ${processing ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                                        >
+                                                            {processing ? 'Uploading...' : 'Upload Berkas'}
+                                                        </button>
+                                                    </div>
+                                                    {errors.file && (
+                                                        <p className="text-red-500 text-xs mt-1">{errors.file}</p>
+                                                    )}
+                                                </div>
+                                            </form>
+                                        </div>
+                                    ) : (
+                                        /* Approved - Show PDF Preview + Success Badge */
+                                        <div className="space-y-4">
+                                            <div className="flex items-center gap-3 p-4 bg-green-50 rounded-xl border border-green-200 animate-fade-in">
+                                                <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center text-green-600 text-lg">
+                                                    ✅
+                                                </div>
+                                                <div>
+                                                    <h3 className="font-bold text-green-800 text-sm">Surat Bebas Pustaka Disetujui</h3>
+                                                    <p className="text-xs text-green-600">
+                                                        Disetujui pada {new Date(thesis.clearance.approved_at).toLocaleDateString()}
+                                                    </p>
+                                                </div>
+                                            </div>
+
+                                            {showPdf && (
+                                                <div
+                                                    className="bg-gray-100 rounded-lg p-4 animate-fade-in relative"
+                                                    onContextMenu={(e) => e.preventDefault()}
+                                                >
+                                                    <iframe
+                                                        src={route('thesis.preview', thesis.id) + '#toolbar=0&navpanes=0'}
+                                                        className="w-full h-[800px] rounded-lg border-2 border-pink-200"
+                                                        title="PDF Preview"
+                                                    />
+
+                                                </div>
+                                            )}
+
+                                            {/* Download Letter Section */}
+                                            {thesis.letter_number && (
+                                                <div className="flex justify-center pt-4">
+                                                    <a
+                                                        href={route('thesis.letter.download', thesis.id)}
+                                                        className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl font-bold shadow-lg hover:from-blue-700 hover:to-blue-800 transition-all duration-300 transform hover:-translate-y-1"
+                                                    >
+                                                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                                        </svg>
+                                                        Download Surat Bebas Pustaka Resmi
+                                                    </a>
+                                                </div>
+                                            )}
                                         </div>
                                     )}
-                                </div>
-
-                                {/* Download Button */}
-                                <div className="bg-gradient-to-r from-pink-50 to-pink-100 rounded-lg p-6 flex items-center justify-between">
-                                    <div className="flex items-center">
-                                        <div className="icon-container mr-4">
-                                            <span className="text-2xl">📄</span>
-                                        </div>
-                                        <div>
-                                            <p className="font-medium text-gray-800">
-                                                {thesis.file_path.split('/').pop()}
-                                            </p>
-                                            <p className="text-sm text-gray-600">
-                                                Ukuran: {thesis.formatted_file_size}
-                                            </p>
-                                        </div>
-                                    </div>
-                                    <button
-                                        onClick={handleDownload}
-                                        className="btn-pink flex items-center gap-2"
-                                    >
-                                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                                        </svg>
-                                        Download PDF
-                                    </button>
                                 </div>
                             </div>
                         </div>

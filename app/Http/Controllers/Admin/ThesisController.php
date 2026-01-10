@@ -5,14 +5,17 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Thesis;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
 use Inertia\Inertia;
 
 class ThesisController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Thesis::with('user');
+        $query = Thesis::with(['user', 'clearance']);
 
         // Search by title, author, description, keywords
         if ($request->has('search') && $request->search) {
@@ -114,6 +117,9 @@ class ThesisController extends Controller
             'category' => 'required|string|max:100',
             'keywords' => 'nullable|string',
             'author_name' => 'required|string|max:255',
+            'nim' => 'required|string|max:20',
+            'prodi' => 'required|string|max:100',
+            'fakultas' => 'required|string|max:100',
             'file' => 'required|file|mimes:pdf|max:10240', // 10MB max
         ]);
 
@@ -175,6 +181,9 @@ class ThesisController extends Controller
             'category' => 'required|string|max:100',
             'keywords' => 'nullable|string',
             'author_name' => 'required|string|max:255',
+            'nim' => 'required|string|max:20',
+            'prodi' => 'required|string|max:100',
+            'fakultas' => 'required|string|max:100',
             'file' => 'nullable|file|mimes:pdf|max:10240',
         ]);
 
@@ -211,5 +220,102 @@ class ThesisController extends Controller
 
         return redirect()->route('admin.thesis.index')
             ->with('success', 'Skripsi berhasil dihapus');
+    }
+
+    /**
+     * POST /admin/thesis/{id}/clearance/approve
+     */
+    public function approveClearance(Request $request, $id)
+    {
+        $thesis = Thesis::findOrFail($id);
+        
+        Gate::authorize('manageClearance', $thesis);
+        
+        if (!$thesis->clearance) {
+            return back()->with('error', 'Mahasiswa belum mengupload surat bebas pustaka.');
+        }
+
+        $thesis->clearance()->update([
+            'status' => 'approved',
+            'approved_by' => auth()->id(),
+            'approved_at' => now(),
+            'notes' => $request->input('notes'),
+        ]);
+
+        return back()->with('success', 'Surat bebas pustaka telah disetujui.');
+    }
+
+    /**
+     * POST /admin/thesis/{id}/clearance/reject
+     */
+    public function rejectClearance(Request $request, $id)
+    {
+        $thesis = Thesis::findOrFail($id);
+
+        Gate::authorize('manageClearance', $thesis);
+
+        if (!$thesis->clearance) {
+            return back()->with('error', 'Mahasiswa belum mengupload surat bebas pustaka.');
+        }
+
+        $thesis->clearance()->update([
+            'status' => 'rejected',
+            'approved_by' => auth()->id(),
+            'approved_at' => now(),
+            'notes' => $request->notes,
+        ]);
+
+        return back()->with('success', 'Surat bebas pustaka berhasil ditolak.');
+    }
+
+    /**
+     * Generate official Library Clearance Letter (Surat Bebas Pustaka)
+     */
+    public function generateLetter($id)
+    {
+        $thesis = Thesis::with(['user', 'clearance'])->findOrFail($id);
+
+        Gate::authorize('manageClearance', $thesis);
+
+        // Check if already approved
+        if (!$thesis->is_approved) {
+            return back()->with('error', 'Skripsi harus disetujui terlebih dahulu.');
+        }
+
+        // Check if letter already exists (optional: allow regeneration)
+        // if ($thesis->letter_file_path) {
+        //     return back()->with('error', 'Surat sudah diterbitkan.');
+        // }
+
+        try {
+            // Generate unique letter number: SBP/YEAR/MONTH/ID
+            $year = now()->year;
+            $month = now()->format('m');
+            $letterNumber = "SBP/{$year}/{$month}/" . str_pad($thesis->id, 4, '0', STR_PAD_LEFT);
+
+            // Path to store
+            $fileName = 'surat_bebas_pustaka_' . $thesis->id . '_' . time() . '.pdf';
+            $storagePath = 'letters/' . $fileName;
+
+            // Update model first so template can use the number
+            $thesis->update([
+                'letter_number' => $letterNumber,
+                'letter_issued_at' => now(),
+                'letter_issued_by' => auth()->id(),
+            ]);
+
+            // Generate PDF
+            $pdf = Pdf::loadView('pdf.clearance_letter', compact('thesis'));
+            
+            // Save to disk
+            Storage::disk('public')->put($storagePath, $pdf->output());
+
+            // Update file path
+            $thesis->update(['letter_file_path' => $storagePath]);
+
+            return back()->with('success', 'Surat Bebas Pustaka berhasil diterbitkan.');
+        } catch (\Exception $e) {
+            return back()->with('error', 'Gagal menerbitkan surat: ' . $e->getMessage());
+        }
     }
 }

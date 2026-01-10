@@ -1,5 +1,5 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, router } from '@inertiajs/react';
 
 export default function Show({ user }) {
     const getRoleBadgeColor = (userRole) => {
@@ -98,10 +98,22 @@ export default function Show({ user }) {
                         <div className="bg-gray-50 px-8 py-4 flex justify-end gap-3">
                             <Link
                                 href={route('admin.users.edit', user.id)}
-                                className="btn-pink"
+                                className="px-6 py-2 bg-yellow-500 hover:bg-yellow-600 text-white rounded-lg font-medium transition-all duration-300"
                             >
                                 Edit User
                             </Link>
+                            {user.role !== 'admin' && (
+                                <button
+                                    onClick={() => {
+                                        if (confirm(`Apakah Anda yakin ingin menghapus user ${user.name}?`)) {
+                                            router.delete(route('admin.users.destroy', user.id));
+                                        }
+                                    }}
+                                    className="px-6 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg font-medium transition-all duration-300"
+                                >
+                                    Hapus User
+                                </button>
+                            )}
                         </div>
                     </div>
                 </div>

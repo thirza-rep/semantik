@@ -59,7 +59,7 @@ export default function CreateThesis({ categories }) {
 
     const submit = (e) => {
         e.preventDefault();
-        post(route('admin.thesis.store'));
+        post(route('mahasiswa.thesis.store'));
     };
 
     const currentYear = new Date().getFullYear();
@@ -70,174 +70,184 @@ export default function CreateThesis({ categories }) {
             header={
                 <div className="flex items-center justify-between">
                     <h2 className="text-xl font-semibold leading-tight text-gray-800">
-                        Upload Skripsi Baru
+                        Input Skripsi Baru
                     </h2>
                     <Link
-                        href={route('admin.thesis.index')}
+                        href={route('mahasiswa.dashboard')}
                         className="text-pink-600 hover:text-pink-700 font-medium"
                     >
-                        ← Kembali
+                        ← Kembali ke Dashboard
                     </Link>
                 </div>
             }
         >
-            <Head title="Upload Skripsi" />
+            <Head title="Input Skripsi" />
 
             <div className="py-12 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-pink-50 to-white min-h-screen">
                 <div className="mx-auto max-w-4xl">
                     <div className="glass-card rounded-xl p-8 animate-fade-in">
                         <div className="mb-6">
                             <h1 className="text-2xl font-bold text-gray-800 mb-2">
-                                Upload Skripsi Baru
+                                Input Skripsi
                             </h1>
                             <p className="text-gray-600">
-                                Lengkapi informasi skripsi dan upload file PDF
+                                Lengkapi data diri dan informasi skripsi untuk diupload ke sistem
                             </p>
                         </div>
 
                         <form onSubmit={submit} className="space-y-6">
-                            {/* Title */}
-                            <div>
-                                <InputLabel htmlFor="title" value="Judul Skripsi *" className="text-gray-700" />
-                                <TextInput
-                                    id="title"
-                                    type="text"
-                                    value={data.title}
-                                    className="mt-1 block w-full border-pink-200 focus:border-pink-500 focus:ring-pink-500"
-                                    onChange={(e) => setData('title', e.target.value)}
-                                    required
-                                />
-                                <InputError message={errors.title} className="mt-2" />
-                            </div>
+                            {/* Author Info Section */}
+                            <div className="bg-pink-50/50 p-6 rounded-xl border border-pink-100 mb-6">
+                                <h3 className="text-lg font-semibold text-gray-800 mb-4 border-b border-pink-100 pb-2">
+                                    Identitas Mahasiswa
+                                </h3>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    {/* Author Name */}
+                                    <div>
+                                        <InputLabel htmlFor="author_name" value="Nama Lengkap *" className="text-gray-700" />
+                                        <TextInput
+                                            id="author_name"
+                                            type="text"
+                                            value={data.author_name}
+                                            className="mt-1 block w-full border-pink-200 focus:border-pink-500 focus:ring-pink-500"
+                                            onChange={(e) => setData('author_name', e.target.value)}
+                                            required
+                                        />
+                                        <InputError message={errors.author_name} className="mt-2" />
+                                    </div>
 
-                            {/* Author Name */}
-                            <div>
-                                <InputLabel htmlFor="author_name" value="Nama Penulis *" className="text-gray-700" />
-                                <TextInput
-                                    id="author_name"
-                                    type="text"
-                                    value={data.author_name}
-                                    className="mt-1 block w-full border-pink-200 focus:border-pink-500 focus:ring-pink-500"
-                                    onChange={(e) => setData('author_name', e.target.value)}
-                                    required
-                                />
-                                <InputError message={errors.author_name} className="mt-2" />
-                            </div>
+                                    {/* NIM */}
+                                    <div>
+                                        <InputLabel htmlFor="nim" value="NIM *" className="text-gray-700" />
+                                        <TextInput
+                                            id="nim"
+                                            type="text"
+                                            value={data.nim}
+                                            className="mt-1 block w-full border-pink-200 focus:border-pink-500 focus:ring-pink-500"
+                                            onChange={(e) => setData('nim', e.target.value)}
+                                            required
+                                        />
+                                        <InputError message={errors.nim} className="mt-2" />
+                                    </div>
 
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                {/* NIM */}
-                                <div>
-                                    <InputLabel htmlFor="nim" value="NIM *" className="text-gray-700" />
-                                    <TextInput
-                                        id="nim"
-                                        type="text"
-                                        value={data.nim}
-                                        className="mt-1 block w-full border-pink-200 focus:border-pink-500 focus:ring-pink-500"
-                                        onChange={(e) => setData('nim', e.target.value)}
-                                        required
-                                    />
-                                    <InputError message={errors.nim} className="mt-2" />
-                                </div>
+                                    {/* Prodi */}
+                                    <div>
+                                        <InputLabel htmlFor="prodi" value="Program Studi *" className="text-gray-700" />
+                                        <TextInput
+                                            id="prodi"
+                                            type="text"
+                                            value={data.prodi}
+                                            className="mt-1 block w-full border-pink-200 focus:border-pink-500 focus:ring-pink-500"
+                                            onChange={(e) => setData('prodi', e.target.value)}
+                                            required
+                                        />
+                                        <InputError message={errors.prodi} className="mt-2" />
+                                    </div>
 
-                                {/* Prodi */}
-                                <div>
-                                    <InputLabel htmlFor="prodi" value="Program Studi *" className="text-gray-700" />
-                                    <TextInput
-                                        id="prodi"
-                                        type="text"
-                                        value={data.prodi}
-                                        className="mt-1 block w-full border-pink-200 focus:border-pink-500 focus:ring-pink-500"
-                                        onChange={(e) => setData('prodi', e.target.value)}
-                                        required
-                                    />
-                                    <InputError message={errors.prodi} className="mt-2" />
-                                </div>
-
-                                {/* Fakultas */}
-                                <div>
-                                    <InputLabel htmlFor="fakultas" value="Fakultas *" className="text-gray-700" />
-                                    <TextInput
-                                        id="fakultas"
-                                        type="text"
-                                        value={data.fakultas}
-                                        className="mt-1 block w-full border-pink-200 focus:border-pink-500 focus:ring-pink-500"
-                                        onChange={(e) => setData('fakultas', e.target.value)}
-                                        required
-                                    />
-                                    <InputError message={errors.fakultas} className="mt-2" />
+                                    {/* Fakultas */}
+                                    <div>
+                                        <InputLabel htmlFor="fakultas" value="Fakultas *" className="text-gray-700" />
+                                        <TextInput
+                                            id="fakultas"
+                                            type="text"
+                                            value={data.fakultas}
+                                            className="mt-1 block w-full border-pink-200 focus:border-pink-500 focus:ring-pink-500"
+                                            onChange={(e) => setData('fakultas', e.target.value)}
+                                            required
+                                        />
+                                        <InputError message={errors.fakultas} className="mt-2" />
+                                    </div>
                                 </div>
                             </div>
 
-                            {/* Year and Category */}
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            {/* Thesis Info Section */}
+                            <div className="bg-white p-6 rounded-xl border border-gray-100 mb-6">
+                                <h3 className="text-lg font-semibold text-gray-800 mb-4 border-b border-gray-100 pb-2">
+                                    Informasi Skripsi
+                                </h3>
+
+                                {/* Title */}
+                                <div className="mb-4">
+                                    <InputLabel htmlFor="title" value="Judul Skripsi *" className="text-gray-700" />
+                                    <TextInput
+                                        id="title"
+                                        type="text"
+                                        value={data.title}
+                                        className="mt-1 block w-full border-pink-200 focus:border-pink-500 focus:ring-pink-500"
+                                        onChange={(e) => setData('title', e.target.value)}
+                                        required
+                                    />
+                                    <InputError message={errors.title} className="mt-2" />
+                                </div>
+
+                                {/* Year and Category */}
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
+                                    <div>
+                                        <InputLabel htmlFor="year" value="Tahun Terbit *" className="text-gray-700" />
+                                        <select
+                                            id="year"
+                                            value={data.year}
+                                            onChange={(e) => setData('year', e.target.value)}
+                                            className="mt-1 block w-full border-pink-200 focus:border-pink-500 focus:ring-pink-500 rounded-md shadow-sm"
+                                            required
+                                        >
+                                            {years.map((year) => (
+                                                <option key={year} value={year}>
+                                                    {year}
+                                                </option>
+                                            ))}
+                                        </select>
+                                        <InputError message={errors.year} className="mt-2" />
+                                    </div>
+
+                                    <div>
+                                        <InputLabel htmlFor="category" value="Kategori *" className="text-gray-700" />
+                                        <select
+                                            id="category"
+                                            value={data.category}
+                                            onChange={(e) => setData('category', e.target.value)}
+                                            className="mt-1 block w-full border-pink-200 focus:border-pink-500 focus:ring-pink-500 rounded-md shadow-sm"
+                                            required
+                                        >
+                                            <option value="">Pilih Kategori</option>
+                                            {categories.map((category) => (
+                                                <option key={category} value={category}>
+                                                    {category}
+                                                </option>
+                                            ))}
+                                        </select>
+                                        <InputError message={errors.category} className="mt-2" />
+                                    </div>
+                                </div>
+
+                                {/* Keywords */}
+                                <div className="mb-4">
+                                    <InputLabel htmlFor="keywords" value="Kata Kunci" className="text-gray-700" />
+                                    <TextInput
+                                        id="keywords"
+                                        type="text"
+                                        value={data.keywords}
+                                        className="mt-1 block w-full border-pink-200 focus:border-pink-500 focus:ring-pink-500"
+                                        onChange={(e) => setData('keywords', e.target.value)}
+                                        placeholder="Pisahkan dengan koma, contoh: web semantik, ontologi, RDF"
+                                    />
+                                    <InputError message={errors.keywords} className="mt-2" />
+                                </div>
+
+                                {/* Description */}
                                 <div>
-                                    <InputLabel htmlFor="year" value="Tahun Terbit *" className="text-gray-700" />
-                                    <select
-                                        id="year"
-                                        value={data.year}
-                                        onChange={(e) => setData('year', e.target.value)}
+                                    <InputLabel htmlFor="description" value="Deskripsi/Abstrak *" className="text-gray-700" />
+                                    <textarea
+                                        id="description"
+                                        value={data.description}
+                                        onChange={(e) => setData('description', e.target.value)}
                                         className="mt-1 block w-full border-pink-200 focus:border-pink-500 focus:ring-pink-500 rounded-md shadow-sm"
+                                        rows="6"
                                         required
-                                    >
-                                        {years.map((year) => (
-                                            <option key={year} value={year}>
-                                                {year}
-                                            </option>
-                                        ))}
-                                    </select>
-                                    <InputError message={errors.year} className="mt-2" />
+                                        placeholder="Tuliskan deskripsi atau abstrak skripsi..."
+                                    />
+                                    <InputError message={errors.description} className="mt-2" />
                                 </div>
-
-                                <div>
-                                    <InputLabel htmlFor="category" value="Kategori *" className="text-gray-700" />
-                                    <select
-                                        id="category"
-                                        value={data.category}
-                                        onChange={(e) => setData('category', e.target.value)}
-                                        className="mt-1 block w-full border-pink-200 focus:border-pink-500 focus:ring-pink-500 rounded-md shadow-sm"
-                                        required
-                                    >
-                                        <option value="">Pilih Kategori</option>
-                                        {categories.map((category) => (
-                                            <option key={category} value={category}>
-                                                {category}
-                                            </option>
-                                        ))}
-                                    </select>
-                                    <InputError message={errors.category} className="mt-2" />
-                                </div>
-                            </div>
-
-                            {/* Keywords */}
-                            <div>
-                                <InputLabel htmlFor="keywords" value="Kata Kunci" className="text-gray-700" />
-                                <TextInput
-                                    id="keywords"
-                                    type="text"
-                                    value={data.keywords}
-                                    className="mt-1 block w-full border-pink-200 focus:border-pink-500 focus:ring-pink-500"
-                                    onChange={(e) => setData('keywords', e.target.value)}
-                                    placeholder="Pisahkan dengan koma, contoh: web semantik, ontologi, RDF"
-                                />
-                                <InputError message={errors.keywords} className="mt-2" />
-                                <p className="mt-1 text-sm text-gray-500">
-                                    Masukkan kata kunci yang relevan untuk memudahkan pencarian
-                                </p>
-                            </div>
-
-                            {/* Description */}
-                            <div>
-                                <InputLabel htmlFor="description" value="Deskripsi/Abstrak *" className="text-gray-700" />
-                                <textarea
-                                    id="description"
-                                    value={data.description}
-                                    onChange={(e) => setData('description', e.target.value)}
-                                    className="mt-1 block w-full border-pink-200 focus:border-pink-500 focus:ring-pink-500 rounded-md shadow-sm"
-                                    rows="6"
-                                    required
-                                    placeholder="Tuliskan deskripsi atau abstrak skripsi..."
-                                />
-                                <InputError message={errors.description} className="mt-2" />
                             </div>
 
                             {/* File Upload */}
@@ -331,7 +341,7 @@ export default function CreateThesis({ categories }) {
                             {/* Submit Buttons */}
                             <div className="flex items-center justify-end gap-4 pt-6 border-t border-pink-100">
                                 <Link
-                                    href={route('admin.thesis.index')}
+                                    href={route('mahasiswa.dashboard')}
                                     className="px-6 py-2 border-2 border-pink-500 text-pink-600 rounded-lg font-medium hover:bg-pink-50 transition-all duration-300"
                                 >
                                     Batal
@@ -340,7 +350,7 @@ export default function CreateThesis({ categories }) {
                                     className="px-6 py-2 bg-gradient-to-r from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700"
                                     disabled={processing}
                                 >
-                                    {processing ? 'Uploading...' : 'Upload Skripsi'}
+                                    {processing ? 'Menyimpan...' : 'Simpan Skripsi'}
                                 </PrimaryButton>
                             </div>
                         </form>
