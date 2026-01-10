@@ -268,7 +268,7 @@ This project is licensed under the MIT License.
 
 ## 👥 Contributors
 
-- Web Semantik Team
+- Web Codevitefits Team
 
 ## 🙏 Acknowledgments
 
